@@ -1,12 +1,13 @@
 class Card
-  attr_reader :value, :suit
+  attr_reader :card_type, :value, :suit
 
-  def initialize(value, suit)
+  def initialize(card_type, suit, value)
+    @card_type = card_type
     @value = value
     @suit = suit
   end
 
   def to_s
-    "#{value}" + suit
+    "#{card_type}" + suit
   end
 end

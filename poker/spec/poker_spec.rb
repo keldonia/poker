@@ -5,7 +5,6 @@ require 'card.rb'
 require 'deck.rb'
 require 'hand.rb'
 require 'player.rb'
-require 'card_values.rb'
 
 describe Poker do
 
@@ -49,8 +48,81 @@ describe Poker do
   describe Card do
 
     it "prints out the value and suit of the card" do
-      card = Card.new(6,"♦")
+      card = Card.new(6, "♦", 5)
       expect(card.to_s).to eq("6♦")
     end
+  end
+
+
+  describe Hand do
+    let(:deck) { Deck.new }
+    let(:player_hand) { (1..5).map{ deck.draw } }
+    let(:hand) {Hand.new(player_hand)}
+
+    describe '#high_card' do
+      it "will return the card with the highest value" do
+        hand_max = player_hand.map { |card| card.value }.max
+        expect(hand.high_card(player_hand).value).to eq(hand_max)
+      end
+    end
+
+    describe '#pairs' do
+      let(:no_pair) { [ Card.new(:J, "♣", 10) ] }
+      let(:single_pair) { (1..2).map { Card.new(:J, "♣", 10) } }
+      let(:double_pairs) { (1..2).map { Card.new(:J, "♣", 10) } + (1..2).map { Card.new(:Q, "♣", 11) } }
+
+      it "returns empty array if there are no pairs" do
+        expect(Hand.new(no_pair).pairs).to eq([])
+      end
+
+      it "returns a single pair" do
+        expect(Hand.new(single_pair).pairs).to eq(single_pair)
+      end
+
+      it "returns two pairs" do
+        expect(Hand.new(double_pairs).pairs).to eq(double_pairs)
+      end
+
+    end
+
+    describe '#three_of_a_kind' do
+      let(:no_pair) { [ Card.new(:J, "♣", 10) ] }
+      let(:threes) { (1..3).map { Card.new(:J, "♣", 10) } }
+
+      it "returns empty array if there are no pairs" do
+        expect(Hand.new(no_pair).three_of_a_kind).to eq([])
+      end
+
+      it "returns a three of a kind" do
+        expect(Hand.new(threes).three_of_a_kind).to eq(threes)
+      end
+    end
+
+    describe '#flush?' do
+      let(:no_pair) { [ Card.new(:J, "♣", 10) ] }
+      let(:flush) { (1..5).map { Card.new(:J, "♣", 10) } }
+
+      it "returns empty array if there are no pairs" do
+        expect(Hand.new(no_pair).flush?).to be_falsey
+      end
+
+      it "returns a three of a kind" do
+        expect(Hand.new(flush).flush?).to be_truthy
+      end
+    end
+
+    describe '#straight?' do
+      let(:no_pair) { [ Card.new(:J, "♣", 10) ] }
+      let(:straight) { (1..5).map { |val| Card.new(:J, "♣", val) } }
+
+      it "returns empty array if there are no pairs" do
+        expect(Hand.new(no_pair).straight?).to be_falsey
+      end
+
+      it "returns a three of a kind" do
+        expect(Hand.new(straight).straight?).to be_truthy
+      end
+    end
+
   end
 end

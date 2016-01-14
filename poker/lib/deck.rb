@@ -1,10 +1,25 @@
 require_relative 'card.rb'
-require_relative 'card_values.rb'
 
 class Deck
-  include CardValues
-
   attr_reader :deck
+
+  CARD_VALUES = {
+    A: 13,
+    K: 12,
+    Q: 11,
+    J: 10,
+    10 => 9,
+    9 => 8,
+    8 => 7,
+    7 => 6,
+    6 => 5,
+    5 => 4,
+    4 => 3,
+    3 => 2,
+    2 => 1,
+  }
+
+  SUITS = ["♠", "♥", "♦", "♣"]
 
   def initialize
     @deck = []
@@ -13,9 +28,9 @@ class Deck
   end
 
   def populate_deck
-    self.suits.each do |suit|
-      self.card_values.each do |card_type, value|
-        @deck << Card.new(card_type, suit)
+    SUITS.each do |suit|
+      CARD_VALUES.each do |card_type, value|
+        @deck << Card.new(card_type, suit, value)
       end
     end
   end
